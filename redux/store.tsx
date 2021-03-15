@@ -1,11 +1,19 @@
 //redux
-import {configureStore} from "@reduxjs/toolkit";
+import {configureStore,
+  EnhancedStore,
+  getDefaultMiddleware,
+} from "@reduxjs/toolkit";
 import {userSlice} from "./slices/userSlice"
+import {Env} from "../constants/Env";
+
+const middlewares = [...getDefaultMiddleware()]
 
 export const store = configureStore({
   reducer:{
-        ui: userSlice.reducer
-  }
+        user: userSlice.reducer
+  },
+  middleware: middlewares,
+  devTools: Env.NODE_ENV === "development"
 })
 
 export type RootState = ReturnType<typeof store.getState>

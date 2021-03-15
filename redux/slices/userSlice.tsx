@@ -1,27 +1,64 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {fetchCurrentUser} from "../asyncActions/index";
+
+
+//type
+export type UserPayload = {
+    id: string,
+    display_name: string,
+}
+
+export type CounterState = {
+  count: number
+}
+
+export type UserState = {
+  user: {
+    id: string,
+    display_name: string,
+  }
+}
+
+export type StateType =  CounterState & UserState;
+
+const initialState: StateType = {
+  count: 1,
+  user:{
+    id: "",
+    display_name: ""
+  }
+}
 
 export const userSlice = createSlice({
     name: "userSlice",
-    initialState: {loading:false},
+    initialState,
     reducers: {
       //normal reducers
-        userLoading(state, action){
-            state.loading = true;
+      increment: (state: StateType): StateType => {
+        return {
+          ...state,
+          count: state.count + 1,
         }
+      },
+      decrement: (state: StateType): StateType => {
+        return {
+          ...state,
+          count: state.count - 1,
+        }
+      },
     }  ,
     extraReducers: {
         //for async actions vs..
-        [fetchCurrentUser.pending.toString()]: (state:any) => {
-            state.loading=true;
+        [fetchCurrentUser.pending.toString()]: (state:StateType):StateType => {
+            return {
+              ...state,
+              //loading
+            }
           },
-        [fetchCurrentUser.fulfilled.toString()]: (state:any, action) => {
+        [fetchCurrentUser.fulfilled.toString()]: (state:any, action:PayloadAction<UserPayload>) => {
             state.user = {
                          id: action.payload.id,
                          displayName: action.payload.display_name,
-                         images: action.payload.images,
-                         followers: action.payload.followers.total,
-                         profileLink: action.payload.href,
                        };
             state.loading=false;
           },
@@ -33,5 +70,5 @@ export const userSlice = createSlice({
     }
 })
 
-export const {userLoading} = userSlice.actions;
+export const {increment, decrement} = userSlice.actions;
 export default userSlice;
