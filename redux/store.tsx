@@ -1,6 +1,5 @@
 //redux
 import {configureStore,
-  EnhancedStore,
   getDefaultMiddleware,
 } from "@reduxjs/toolkit";
 import {userSlice} from "./slices/userSlice"
